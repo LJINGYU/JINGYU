@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpu.dao.UserDao">
+    <resultMap id="BaseResultMap" type="com.hpu.entity.User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="rolename" property="rolename" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,username,password,email,phone,rolename
+    </sql>
+    <!--根据主键查询一条数据-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tb_user
+        WHERE  id=#{id,jdbcType=INTEGER}
+    </select>
+    <!--用户登录-->
+    <select id="loginByUserNameAndPassword" resultMap="BaseResultMap" parameterType="com.hpu.entity.User">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tb_user
+        WHERE
+        username = #{username} and password= #{password}
+    </select>
+    <!--根据分页数据start & size查询数据-->
+    <select id="findByPage" parameterType="Map" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tb_user
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+    </select>
+    <!--查询所有数据-->
+    <select id="selectUserList" resultType="com.hpu.entity.User">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tb_user
+    </select>
+    <!--查询总记录数-->
+    <select id="selectCount" resultType="int">
+        SELECT count(*)
+        FROM tb_user
+    </select>
+    <!--根据主键删除一条数据-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        DELETE FROM tb_user
+        WHERE  id=#{id,jdbcType=INTEGER}
+    </delete>
+    <!--插入一条完整数据-->
+    <insert id="insert" parameterType="com.hpu.entity.User">
+        INSERT  INTO tb_user (id,username,password,email,phone,rolename)
+        VALUES (#{id,jdbcType=INTEGER},
+                #{username,jdbcType=VARCHAR},
+                #{password,jdbcType=VARCHAR},
+                #{email,jdbcType=VARCHAR},
+                #{phone,jdbcType=VARCHAR},
+                #{rolename,jdbcType=VARCHAR}
+                )
+    </insert>
+    <!--插入一条数据可以不完整-->
+    <insert id="insertSelective" parameterType="com.hpu.entity.User">
+        INSERT  INTO tb_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="username != null">
+                userName,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="rolename != null">
+                roleName,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="rolename != null">
+                #{rolename,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--根据主键更新一条数据,可以不完整-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.hpu.entity.User">
+        UPDATE  tb_user
+        <set>
+            <if test="username!=null">
+                username=#{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password!=null">
+               password= #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email!=null">
+                email=#{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="rolename!=null">
+                rolename=#{rolename,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE id=#{id,jdbcType=INTEGER}
+    </update>
+    <!--根据主键更新一条数据-->
+    <update id="updateByPrimaryKey" parameterType="com.hpu.entity.User">
+        update tb_user
+        SET    username=#{username,jdbcType=VARCHAR},
+                password=#{password,jdbcType=VARCHAR},
+                email=#{email,jdbcType=VARCHAR},
+                phone=#{phone,jdbcType=VARCHAR},
+                rolename=#{rolename,jdbcType=VARCHAR}
+                WHERE id=#{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="queryUserWith"  resultMap="BaseResultMap" parameterType="com.hpu.entity.User">
+        SELECT
+        <include refid="Base_Column_List"/>
+         FROM tb_user
+            <where>
+                <if test="username != null and !&quot;&quot;.equals(username.trim())">
+                    and username like '%' #{username} '%'
+                </if>
+                <if test="rolename != null and !&quot;&quot;.equals(rolename.trim())">
+                    and rolename like '%' #{rolename} '%'
+                </if>
+            </where>
+    </select>
+    <delete id="deleteBatch" parameterType="java.util.List">
+        delete from tb_user where id in(
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </delete>
+</mapper>
