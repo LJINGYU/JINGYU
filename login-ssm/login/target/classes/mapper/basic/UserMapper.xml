@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+    <resultMap id="BaseResultMap" type="User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="rolename" property="rolename" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,username,password,email,phone,rolename
+    </sql>
+    <!--用户登录验证-->
+    <select id="loginByUserNameAndPassword" resultMap="BaseResultMap" parameterType="Map">
+        SELECT
+        u.id,u.username,u.password,u.email,u.phone,u.rolename
+        FROM tb_user u
+        WHERE
+        u.username = #{username} AND u.password= #{password}
+    </select>
+</mapper>

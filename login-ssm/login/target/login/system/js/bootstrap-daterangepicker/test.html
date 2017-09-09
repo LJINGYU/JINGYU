@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="bootstrap.min.css" rel="stylesheet"/>
+    <link href="datetimepicker.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="row">
+        <div class="span9">
+
+            <section id="demo_position">
+
+                <div>
+                    <div class="bs-docs-example">
+                        <div class="input-append date form_datetime5" data-picker-position="bottom-left">
+                            <input size="16" type="text" value="" readonly="">
+                            <span class="add-on"><i class="icon-th"></i></span>
+                        </div>
+                        <p></p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script src="jquery.min.js"></script>
+<!--<script src="bootstrap.min.js"></script>-->
+<script src="bootstrap-datetimepicker.min.js"></script>
+
+<script type="text/javascript">
+    $(".form_datetime5").datetimepicker({
+        pickTime: false,
+        todayBtn: true,
+        autoclose: true,
+        minView: '2',
+        forceParse: false,
+        format: "yyyy-mm-dd"
+    });
+ </script>

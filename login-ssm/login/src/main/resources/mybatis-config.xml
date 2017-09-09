@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"  
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="cacheEnabled" value="true" /><!-- 全局映射器启用缓存 -->
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" />
+	</settings>
+
+	<!--<typeAliases>
+		<typeAlias type="com.chinook5.util.PageData" alias="pd" />
+		&lt;!&ndash; 分页 &ndash;&gt;
+		<typeAlias type="com.chinook5.util.Page" alias="page" />
+	</typeAliases>
+
+	<plugins>
+		<plugin interceptor="com.chinook5.util.PagePlugin">
+			<property name="dialect" value="mysql" />
+			<property name="pageSqlId" value=".*ListPage.*" />
+		</plugin>
+	</plugins>-->
+
+</configuration>

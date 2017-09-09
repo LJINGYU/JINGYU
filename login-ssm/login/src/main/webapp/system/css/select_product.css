@@ -1,0 +1,15 @@
+.select-product {
+    background-color: #5e87b0;
+    color: white;
+}
+
+.modal-body {
+    position: relative;
+    padding: 10px 20px 0 20px;
+}
+.modal-footer {
+    margin-top: 0px;
+}
+.modal-dialog{
+    width: 820px;
+}
