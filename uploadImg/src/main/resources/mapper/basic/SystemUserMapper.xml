@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SystemUserMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="systemUser">
+        <id column="system_user_id" property="systemUserID"/>
+        <result column="system_id" property="systemID"/>
+        <result column="login_id" property="loginID"/>
+        <result column="password" property="password"/>
+        <result column="first_name" property="firstName"/>
+        <result column="middle_name" property="middleName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="profile_photo_id" property="profilePhotoID"/>
+        <result column="photo_path" property="profilePhoto"/>
+        <result column="user_type" property="userType"/>
+        <result column="status_id" property="statusID"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="modify_by" property="modifyBy"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="deleted" property="deleted"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        system_user_id AS systemUserID, system_id AS systemID, login_id AS loginID, password, first_name AS firstName, middle_name AS middleName, last_name AS lastName, email, profile_photo_id AS profilePhotoID, user_type AS userType, status_id AS statusID, created_by AS createdBy, created_date AS createdDate, modify_by AS modifyBy, modify_date AS modifyDate, remark
+    </sql>
+    <!--新增管理员-->
+    <insert id="insertSystemUser" parameterType="com.chinook5.bean.basic.SystemUser">
+        <selectKey keyProperty="systemUserID" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO system_user SET
+        system_id=#{systemID},
+        <if test="middleName != null and middleName!='' ">
+            middle_name=#{middleName},
+        </if>
+        <if test="lastName != null and lastName!='' ">
+            last_name=#{lastName},
+        </if>
+
+        <if test="email != null and email!='' ">
+            email=#{email},
+        </if>
+        <if test="profilePhotoID != null and profilePhotoID!='' ">
+            profile_photo_id=#{profilePhotoID},
+        </if>
+        <if test="userType != null and userType!='' ">
+            user_type=#{userType},
+        </if>
+        login_id=#{loginID},
+        password=#{password},
+        first_name=#{firstName},
+        status_id=#{statusID},
+        created_by=#{createdBy},
+        created_date=#{createdDate},
+        modify_by=#{modifyBy},
+        modify_date=#{modifyDate},
+        <if test="remark != null and remark!='' ">
+            remark=#{remark},
+        </if>
+        deleted=0
+
+
+    </insert>
+
+    <!--获取管理员分页列表-->
+    <select id="getSystemUserListPage" parameterType="page" resultType="pd">
+        SELECT
+        sys_u.system_user_id,
+        sys_u.system_id,
+        sys_u.login_id,
+        sys_u.first_name,
+        sys_u.middle_name,
+        sys_u.last_name,
+        sys_u.email,
+        sys_u.created_by,
+        sys_u.created_date,
+        sys_u.modify_by,
+        sys_u.modify_date,
+        sys_u.remark,
+        sys.system_name,
+        p.photo_path,
+        sta.status_name
+        FROM
+        system_user sys_u
+        LEFT JOIN system sys ON sys_u.system_id = sys.system_id
+        LEFT JOIN photo p ON sys_u.profile_photo_id = p.photo_id
+        LEFT JOIN `status` sta ON sys_u.status_id = sta.status_id
+        WHERE 1=1
+        and sys_u.deleted=0
+        and sys_u.status_id !=3
+        order by sys_u.system_user_id DESC
+    </select>
+    <select id="getSystemUserByLoginIDInAll" parameterType="String" resultType="int">
+                SELECT
+            system_user_id
+        FROM
+            system_user
+        WHERE
+            login_id =#{systemUserLoginID}
+    </select>
+
+
+    <!--删除管理员-->
+    <update id="deleteSystemUser" parameterType="com.chinook5.bean.basic.SystemUser">
+        UPDATE    system_user SET
+        modify_by=#{modifyBy},
+        modify_date=#{modifyDate},
+        deleted=1
+        WHERE system_user_id=#{systemUserID}
+    </update>
+</mapper>
