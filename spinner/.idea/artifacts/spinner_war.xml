@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="spinner:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="spinner.war">
+      <element id="artifact" artifact-name="spinner:war exploded" />
+    </root>
+  </artifact>
+</component>

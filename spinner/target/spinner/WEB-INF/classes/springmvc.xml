@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <mvc:annotation-driven/>
+    <!-- 对静态资源文件的访问 -->
+    <mvc:resources location="/system/" mapping="/system/**"></mvc:resources>
+    <mvc:view-controller path="/" view-name="system/public/login"/>
+    <!--配置springmvc扫包 只扫controller注解-->
+    <context:component-scan base-package="com.chinook5" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+   <!-- <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.chinook5.aop.DuplicateSubmissionInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/wa/**"/>
+            <mvc:mapping path="/pu/**"/>
+            <mvc:mapping path="/ba/**"/>
+            <mvc:mapping path="/cs/**"/>
+            <mvc:mapping path="/sh/**"/>
+            <mvc:mapping path="/fi/**"/>
+            <mvc:mapping path="/si/**"/>
+            <mvc:mapping path="/home/**"/>
+            <bean class="com.chinook5.aop.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+    <!-- 配置jsp视图 -->
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="1"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--ireport视图解析-->
+    <!--<bean id="jasperReportResolver" class="org.springframework.web.servlet.view.XmlViewResolver">-->
+        <!--<property name="order" value="0"/>-->
+        <!--<property name="location" value="/WEB-INF/jasper/jasper-defs.xml"/>-->
+    <!--</bean>-->
+
+    <!--文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="10240000"/>
+        <!-- 设置在文件上传时允许写到内存中的最大值，以字节为单位计算，默认是10240 -->
+        <!-- 但是经实验，上传文件大小若小于此参数，则不会生成临时文件，故改为2048 -->
+        <property name="maxInMemorySize" value="2048"/>
+    </bean>
+</beans>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CountryMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.chinook5.bean.basic.Country">
+        <id column="country_id" property="countryID" jdbcType="INTEGER"/>
+        <result column="country_code" property="countryCode" jdbcType="VARCHAR"/>
+        <result column="short_code" property="shortCode" jdbcType="VARCHAR"/>
+        <result column="country_name" property="countryName" jdbcType="VARCHAR"/>
+        <result column="short_name" property="shortName" jdbcType="VARCHAR"/>
+        <result column="word_code" property="wordCode" jdbcType="VARCHAR"/>
+        <result column="continent" property="continent" jdbcType="VARCHAR"/>
+        <result column="currency_id" property="currencyID" jdbcType="INTEGER"/>
+        <result column="high_value_amount" property="highValueAmount" jdbcType="DECIMAL"/>
+        <result column="serial_no" property="serialNo" jdbcType="INTEGER"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+        <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+        <result column="modify_by" property="modifyBy" jdbcType="VARCHAR" />
+        <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+        <result column="deleted" property="deleted" jdbcType="BIT" />
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--国家列表-->
+    <select id="getCountryListPage" parameterType="page" resultType="pd">
+        SELECT
+            co.country_id,
+            co.country_code,
+            co.short_code,
+            co.country_name,
+            co.short_name,
+            co.word_code,
+            co.continent,
+            cu.currency_code,
+            co.serial_no
+        FROM country co
+        left JOIN currency cu ON  co.currency_id = cu.currency_id
+         WHERE co.deleted = 0
+             <if test="pd.countryName != null and pd.countryName != ''">
+                 AND co.country_name LIKE CONCAT ('%',#{pd.countryName},'%')
+             </if>
+            <if test="pd.countryCode != null and pd.countryCode != ''">
+                AND co.country_code LIKE CONCAT('%', #{pd.countryCode},'%')
+            </if>
+        ORDER BY co.serial_no,co.country_name
+    </select>
+    <!--根据CountryCode获取CountryID-->
+    <select id="getCountryIDByCountryCodeInAll" parameterType="String" resultType="int">
+        SELECT country_id FROM country WHERE country_code = #{countryCode}
+    </select>
+    <!--根据ShortName获取CountryID-->
+    <select id="getCountryIDByName" parameterType="String" resultType="java.lang.Integer">
+         SELECT country_id FROM country WHERE short_name = #{countryName}
+    </select>
+    <!--新增生产国家-->
+    <insert id="insertCountry" parameterType="com.chinook5.bean.basic.Country">
+        <selectKey keyProperty="countryID" order="AFTER" resultType="int">
+            SELECT  LAST_INSERT_ID()
+        </selectKey>
+        INSERT  INTO country(
+        country_code,short_code,country_name,short_name,word_code,continent,currency_id,high_value_amount,serial_no,created_by,created_date,remark
+        )VALUES (
+        #{countryCode},#{shortCode},#{countryName},
+        #{shortName},#{wordCode},#{continent},#{currencyID},#{highValueAmount},
+        #{serialNo},#{createdBy},#{createdDate},#{remark}
+        )
+    </insert>
+    <update id="updateCountry" parameterType="com.chinook5.bean.basic.Country">
+        UPDATE country
+        SET
+        country_code = #{countryCode},
+        short_code = #{shortCode},
+        country_name = #{countryName},
+        short_name = #{shortName},
+        word_code = #{wordCode},
+        continent = #{continent},
+        currency_id = #{currencyID},
+        high_value_amount = #{highValueAmount},
+        serial_no = #{serialNo},
+        modify_by = #{modifyBy},
+        modify_date = #{modifyDate},
+        remark = #{remark}
+        WHERE
+        country_id = #{countryID}
+    </update>
+    <!--根据countryID获取对应的Country信息-->
+    <select id="getCountryInfoByID" parameterType="int" resultType="pd">
+        SELECT
+        co.country_id,
+        co.country_code,
+        co.short_code,
+        co.country_name,
+        co.short_name,
+        co.word_code,
+        co.continent,
+        co.currency_id,
+        co.high_value_amount,
+        cu.currency_code,
+        co.serial_no
+        FROM country co
+        LEFT JOIN currency cu ON co.currency_id = cu.currency_id
+        WHERE co.deleted = 0
+        AND co.country_id = #{countryID}
+    </select>
+    <!--删除生产国家-->
+    <update id="deleteCountryByID" parameterType="int">
+        UPDATE country
+        SET
+        deleted = 1,
+        modify_by = #{modifyBy},
+        modify_date = NOW()
+        WHERE
+        country_id = #{countryID}
+    </update>
+    <select id="getCountryForSpinner" resultType="pd">
+        SELECT
+        country_id,
+            short_name
+        FROM
+            country
+        WHERE
+            deleted = 0
+        ORDER BY
+            serial_no,
+            country_name
+    </select>
+</mapper>
